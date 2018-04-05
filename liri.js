@@ -16,8 +16,7 @@ function tweeter() {
     (err, tweets, response) => {
       if (err) {
         console.log(err);
-      }
-      else {
+      } else {
         console.log("====================================================");
         console.log("@" + p1 + "'s last twenty tweets: ");
         for (let i = 0; i < tweets.length; i++) {
@@ -49,19 +48,32 @@ function spootify() {
 
 function moovie() {
   var movie = p1;
-  request("http://www.omdbapi.com/?apikey=trilogy&t=" + movie, function (err, answer, info) {
+  var url = "http://www.omdbapi.com/?apikey=trilogy&t="
+  var query = url + movie
+  if (p1 === undefined) {
+    query = "http://www.omdbapi.com/?apikey=trilogy&i=tt0485947"
+  }
+  request(query, function(
+    err,
+    answer,
+    info
+  ) {
     var body = JSON.parse(info);
     console.log("====================================================");
     console.log("Title: " + body.Title);
     console.log("Production year: " + body.Year);
     console.log("IMDB rating: " + body.imdbRating);
-    console.log("Rotten Tomatoes rating: " + body.Ratings[1].Value);
+    if (!body.Ratings[1]) {
+      console.log("Rotten Tomatoes rating not available for this title.");
+    } else {
+      console.log("Rotten Tomatoes rating: " + body.Ratings[1].Value);
+    }
     console.log("Country of origin: " + body.Country);
     console.log("Language: " + body.Language);
     console.log("Plot: " + body.Plot);
     console.log("Actors: " + body.Actors);
     console.log("====================================================");
-  })
+  });
 }
 
 function wildCard() {
@@ -72,7 +84,7 @@ function wildCard() {
     var inst = data.split(",");
     input = inst[0];
     p1 = inst[1];
-    if(inst[0] === "my-tweets") {
+    if (inst[0] === "my-tweets") {
       tweeter();
     } else if (inst[0] === "spotify-this-song") {
       spootify();
